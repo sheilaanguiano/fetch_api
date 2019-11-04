@@ -12,13 +12,17 @@ function fetchData(url){
             .catch(error => console.log('Looks like there was a problem', error))
 }
 
-fetchData('https://dog.ceo/api/breeds/list')
-    .then(data => generateOptions(data.message))
-    
-fetchData('https://dog.ceo/api/breeds/image/random')
-    //.then(response => console.log(response))
-    .then(data => generateImage(data.message))
+Promise.all([
+    fetchData('https://dog.ceo/api/breeds/list'),
+    fetchData('https://dog.ceo/api/breeds/image/random')
+])
+.then(data => {
+    const breedList = data[0].message;
+    const randomImage = data[1].message;
 
+    generateOptions(breedList);
+    generateImage(randomImage);
+})
 
 // ------------------------------------------
 //  HELPER FUNCTIONS
@@ -66,10 +70,19 @@ function fetchBreedImage(){
 // ------------------------------------------
 select.addEventListener('change', fetchBreedImage);
 card.addEventListener('click', fetchBreedImage);
-
+form.addEventListener('submit', postData);
 
 
 // ------------------------------------------
 //  POST DATA
 // ------------------------------------------
+function postData(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const comment = document.getElementById('comment').value;
 
+    fetch('https://jsonplaceholder.typicode.com/comments')
+        .then(checkStatus)
+        .then(res => res.json())
+        .then(data => console.log(data))
+}
