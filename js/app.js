@@ -81,7 +81,16 @@ function postData(e){
     const name = document.getElementById('name').value;
     const comment = document.getElementById('comment').value;
 
-    fetch('https://jsonplaceholder.typicode.com/comments')
+    const config = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({name, comment}),
+    }
+
+    fetch('https://jsonplaceholder.typicode.com/comments', config)
+    
         .then(checkStatus)
         .then(res => res.json())
         .then(data => console.log(data))
